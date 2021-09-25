@@ -7,8 +7,6 @@ using UnityEngine;
 
 namespace UnityHelpers
 {
-
-
   #region Enums
 
   public enum GridType
@@ -22,6 +20,12 @@ namespace UnityHelpers
   {
     Perspective,
     Isometric
+  }
+
+  public enum HexOrientation
+  {
+    PointUp,
+    FlatUp
   }
 
   public enum HexGridIndexType
@@ -52,4 +56,42 @@ namespace UnityHelpers
 
   #endregion
 
+  #region Classes
+
+  public static class HexMetrics
+  {
+    public const float outerRadius = 10f;
+    public const float innerRadius = outerRadius * 0.866025404f;
+
+    private static Vector3[] PointUpCorners =
+    {
+      new Vector3(0f, 0f, outerRadius),
+      new Vector3(innerRadius, 0f, 0.5f * outerRadius),
+      new Vector3(innerRadius, 0f, -0.5f * outerRadius),
+      new Vector3(0f, 0f, -outerRadius),
+      new Vector3(-innerRadius, 0f, -0.5f * outerRadius),
+      new Vector3(-innerRadius, 0f, 0.5f * outerRadius),
+      new Vector3(0f, 0f, outerRadius)
+    };
+
+    private static Vector3[] FlatUpCorners =
+    {
+      new Vector3(-innerRadius, 0f, 0.5f * outerRadius),
+      new Vector3(0f, 0f, outerRadius),
+      new Vector3(innerRadius, 0f, 0.5f * outerRadius),
+      new Vector3(innerRadius, 0f, -0.5f * outerRadius),
+      new Vector3(0f, 0f, -outerRadius),
+      new Vector3(-innerRadius, 0f, -0.5f * outerRadius),
+      new Vector3(-innerRadius, 0f, 0.5f * outerRadius)
+    };
+
+    public static readonly Dictionary<HexOrientation, Vector3[]> corners = new Dictionary<HexOrientation, Vector3[]>
+    {
+      {HexOrientation.PointUp, PointUpCorners },
+      {HexOrientation.FlatUp, FlatUpCorners }
+    };
+
+  }
+
+  #endregion
 }
