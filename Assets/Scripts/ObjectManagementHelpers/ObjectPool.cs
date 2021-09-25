@@ -9,7 +9,7 @@ namespace UnityHelpers
   {
     #region Properties
 
-    private static int initialDepth = 512;
+    private static int initialDepth = 64;
     private Queue<T> m_pool { get; set; }
 
     public int currentDepth { get; private set; }
@@ -91,7 +91,7 @@ namespace UnityHelpers
 
     private void InitializePool()
     {
-      for(int i = 0; i < m_pool.Count; i++)
+      for(int i = 0; i < currentDepth; i++)
       {
         T temp = new T();
         temp.Initialize();
@@ -101,7 +101,7 @@ namespace UnityHelpers
 
     private void InitializeResizedPool()
     {
-      for(int i = m_pool.Count / 2; i< m_pool.Count; i++)
+      for(int i = m_pool.Count; i < currentDepth; i++)
       {
         T temp = new T();
         temp.Initialize();
