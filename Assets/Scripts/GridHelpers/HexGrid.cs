@@ -15,8 +15,10 @@ namespace UnityHelpers
 
     public HexCell cellPrefab;
     public TextMeshProUGUI cellLabelPrefab;
-
     public HexOrientation orientation;
+
+    public Color defaultColor;
+    public Color selectedColor;
 
     private HexMesh hexMesh { get; set; }
     private Canvas gridCanvas { get; set; }
@@ -75,6 +77,7 @@ namespace UnityHelpers
       cell.transform.SetParent(transform, false);
       cell.transform.localPosition = position;
       cell.coordinates = HexCoordinates.FromOffsetCoordinates(x, z);
+      cell.color = defaultColor;
 
       LabelCell(position.x, position.z, x, z, cell);
     }
@@ -85,6 +88,32 @@ namespace UnityHelpers
       label.rectTransform.SetParent(gridCanvas.transform, false);
       label.rectTransform.anchoredPosition = new Vector2(xPos, zPos);
       label.text = cell.coordinates.ToStringLineBreak();
+    }
+
+    private void HandleInput()
+    {
+      Ray inputRay = Camera.main.ScreenPointToRay(Input.mousePosition);
+      RaycastHit hit;
+      if(Physics.Raycast(inputRay, out hit))
+      {
+        TouchCell(hit.point);
+      }
+    }
+
+    private void TouchCell(Vector3 position)
+    {
+      position = transform.InverseTransformPoint(position);
+      HexCoordinates coordinates = HexCoordinates.FromPosition(position);
+      HexCell touchedCell = HexCoordinatesToCell(coordinates);
+      touchedCell.color = selectedColor;
+      hexMesh.Triangulate(cells);
+      Debug.Log("Touched at " + coordinates.ToString());
+    }
+
+    private HexCell HexCoordinatesToCell(HexCoordinates coordinates)
+    {
+      int index = coordinates.x + coordinates.z * width + coordinates.z / 2;
+      return cells[index];
     }
 
     #endregion

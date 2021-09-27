@@ -61,6 +61,35 @@ namespace UnityHelpers
       return new HexCoordinates(x - z / 2, z);
     }
 
+    public static HexCoordinates FromPosition(Vector3 position)
+    {
+      float x = position.x / (HexMetrics.innerRadius * 2f);
+      float y = -x;
+
+      float offset = position.z / (HexMetrics.outerRadius * 3f);
+      x -= offset;
+      y -= offset;
+
+      Vector3Int intPos = new Vector3Int(Mathf.RoundToInt(x), Mathf.RoundToInt(y), Mathf.RoundToInt(-x - y));
+      if(intPos.sqrMagnitude != 0f)
+      {
+        float dX = Mathf.Abs(x - intPos.x);
+        float dY = Mathf.Abs(y - intPos.y);
+        float dZ = Mathf.Abs(-x -y - intPos.z);
+
+        if(dX > dY && dX > dZ)
+        {
+          intPos.x = -intPos.y - intPos.z;
+        }
+        else if(dZ > dY)
+        {
+          intPos.z = -intPos.x - intPos.y;
+        }
+      }
+
+      return new HexCoordinates(intPos.x, intPos.z);
+    }
+
     public override string ToString()
     {
       return "(" + x.ToString() + ", " + y.ToString() + ", " + z.ToString() + ")";

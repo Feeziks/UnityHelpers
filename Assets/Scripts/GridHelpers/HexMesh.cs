@@ -12,7 +12,9 @@ namespace UnityHelpers
     Mesh hexMesh;
     List<Vector3> vertices;
     List<int> triangles;
+    List<Color> colors;
     HexOrientation orientation;
+    MeshCollider meshCollider;
 
     #endregion
 
@@ -21,9 +23,11 @@ namespace UnityHelpers
     private void Awake()
     {
       GetComponent<MeshFilter>().mesh = hexMesh = new Mesh();
+      meshCollider = gameObject.AddComponent<MeshCollider>();
       hexMesh.name = "Hex mesh";
       vertices = new List<Vector3>();
       triangles = new List<int>();
+      colors = new List<Color>();
     }
 
     #endregion
@@ -35,6 +39,7 @@ namespace UnityHelpers
       hexMesh.Clear();
       vertices.Clear();
       triangles.Clear();
+      colors.Clear();
 
       for(int i = 0; i < cells.Length; i++)
       {
@@ -43,7 +48,10 @@ namespace UnityHelpers
 
       hexMesh.vertices = vertices.ToArray();
       hexMesh.triangles = triangles.ToArray();
+      hexMesh.colors = colors.ToArray();
       hexMesh.RecalculateNormals();
+
+      meshCollider.sharedMesh = hexMesh;
     }
 
     public void SetOrientation(HexOrientation o)
@@ -61,8 +69,8 @@ namespace UnityHelpers
       for(int i = 0; i < 6; i++)
       {
         AddTriangle(center, center + HexMetrics.corners[orientation][i], center + HexMetrics.corners[orientation][i + 1]);
+        AddTriangleColor(cell.color);
       }
-      
     }
 
     private void AddTriangle(Vector3 v1, Vector3 v2, Vector3 v3)
@@ -74,6 +82,13 @@ namespace UnityHelpers
       triangles.Add(vertexIndex);
       triangles.Add(vertexIndex + 1);
       triangles.Add(vertexIndex + 2);
+    }
+
+    private void AddTriangleColor(Color c)
+    {
+      colors.Add(c);
+      colors.Add(c);
+      colors.Add(c);
     }
 
     #endregion
