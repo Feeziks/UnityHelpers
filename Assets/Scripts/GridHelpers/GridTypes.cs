@@ -34,7 +34,7 @@ namespace UnityHelpers
     SouthEast,
     NorthEast,
     NorthWest,
-    HexagonalOffsetCoordinates
+    Axial
   }
 
   #endregion
@@ -44,13 +44,31 @@ namespace UnityHelpers
   [System.Serializable]
   public struct HexCoordinates
   {
-    public int x { get; private set; }
-    public int z { get; private set; }
+    [SerializeField]
+    private int m_x, m_z;
+    public int x { get { return m_x; } }
+    public int z { get { return m_z; } }
+    public int y { get { return -m_x - m_z; } }
 
-    public HexCoordinates(int m_x, int m_z)
+    public HexCoordinates(int xx, int zz)
     {
-      x = m_x;
-      z = m_z;
+      m_x = xx;
+      m_z = zz;
+    }
+
+    public static HexCoordinates FromOffsetCoordinates(int x, int z)
+    {
+      return new HexCoordinates(x - z / 2, z);
+    }
+
+    public override string ToString()
+    {
+      return "(" + x.ToString() + ", " + y.ToString() + ", " + z.ToString() + ")";
+    }
+
+    public string ToStringLineBreak()
+    {
+      return x.ToString() + "\n" + y.ToString() + "\n" + z.ToString();
     }
   }
 
@@ -76,13 +94,13 @@ namespace UnityHelpers
 
     private static Vector3[] FlatUpCorners =
     {
+      new Vector3(0f, 0f, -outerRadius),
+      new Vector3(-innerRadius, 0f, -0.5f * outerRadius),
       new Vector3(-innerRadius, 0f, 0.5f * outerRadius),
       new Vector3(0f, 0f, outerRadius),
       new Vector3(innerRadius, 0f, 0.5f * outerRadius),
       new Vector3(innerRadius, 0f, -0.5f * outerRadius),
-      new Vector3(0f, 0f, -outerRadius),
-      new Vector3(-innerRadius, 0f, -0.5f * outerRadius),
-      new Vector3(-innerRadius, 0f, 0.5f * outerRadius)
+      new Vector3(0f, 0f, -outerRadius)
     };
 
     public static readonly Dictionary<HexOrientation, Vector3[]> corners = new Dictionary<HexOrientation, Vector3[]>

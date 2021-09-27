@@ -48,6 +48,14 @@ namespace UnityHelpers
       hexMesh.Triangulate(cells);
     }
 
+    private void Update()
+    {
+      if(Input.GetMouseButton(0))
+      {
+        HandleInput();
+      }
+    }
+
     #endregion
 
     #region Public Methods
@@ -66,16 +74,17 @@ namespace UnityHelpers
       HexCell cell = cells[i] = Instantiate<HexCell>(cellPrefab);
       cell.transform.SetParent(transform, false);
       cell.transform.localPosition = position;
+      cell.coordinates = HexCoordinates.FromOffsetCoordinates(x, z);
 
-      LabelCell(position.x, position.z, x, z);
+      LabelCell(position.x, position.z, x, z, cell);
     }
 
-    private void LabelCell(float xPos, float zPos, int xIdx, int zIdx)
+    private void LabelCell(float xPos, float zPos, int xIdx, int zIdx, HexCell cell)
     {
       TextMeshProUGUI label = Instantiate(cellLabelPrefab);
       label.rectTransform.SetParent(gridCanvas.transform, false);
       label.rectTransform.anchoredPosition = new Vector2(xPos, zPos);
-      label.text = xIdx.ToString() + "\n" + zIdx.ToString();
+      label.text = cell.coordinates.ToStringLineBreak();
     }
 
     #endregion
